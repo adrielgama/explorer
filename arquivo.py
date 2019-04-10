@@ -51,10 +51,10 @@ def ver_dir(diretorio):
 # ---------------------------- #
 #  Função para criar arquivos  #
 # ---------------------------- #
-def cria_arq(nome_arquivo):
-    # para criar arquivo usando path lib
-    if not os.path.exists('nome_arquivo'):
-        Path(f'{nome_arquivo}.txt').touch()
+def cria_arq(nome_arquivo, extensao='txt'):
+    file = '.'.join([nome_arquivo, extensao])
+    if not os.path.exists(file):
+        Path(file).touch()
     else:
         print('Já existe um arquivo com este nome!!')
 
