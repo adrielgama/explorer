@@ -23,8 +23,8 @@
 import os
 from time import sleep
 import os.path
-# import shutil
-# from pathlib import Path
+import shutil
+from pathlib import Path
 
 clear = lambda: os.system('cls')
 
@@ -34,6 +34,29 @@ def title(tl):
     print(f'{tl:^80}'.upper())
     print('=' * 80)
     print()
+
+
+# ------------------------------- #
+#  Verifica o diretório arquivos  #
+# ------------------------------- #
+def ver_dir(diretorio):
+    if not os.path.exists(diretorio):
+        # Se não existir, cria diretório
+        # Diretório é criado na mesma pasta onde está o arquivo .py
+        os.mkdir(diretorio)
+    else:
+        print('Diretório já existe!')
+
+
+# ---------------------------- #
+#  Função para criar arquivos  #
+# ---------------------------- #
+def cria_arq(nome_arquivo):
+    # para criar arquivo usando path lib
+    if not os.path.exists('nome_arquivo'):
+        Path(f'{nome_arquivo}.txt').touch()
+    else:
+        print('Já existe um arquivo com este nome!!')
 
 
 # ---------------------------- #
@@ -54,6 +77,16 @@ def menu_arquivos():
 
     if op == 0:
         menu()
+    elif op == 1:
+        # cria_arq(str(input('Nome do arquivo: ')))
+        j = 'S'
+        while j == 'S':
+            cria_arq(str(input('Nome do arquivo: ')))
+            j = str(input('Deseja criar um novo arquivo? [S/N]')).upper()
+        menu_arquivos()
+    elif op == 2:
+        s = 0
+
     else:
         print("Este número não está nas alternativas, tente novamente.\n")
         menu_arquivos()
