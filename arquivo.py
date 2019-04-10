@@ -79,6 +79,11 @@ def menu_arquivos():
         menu()
     elif op == 1:
         # cria_arq(str(input('Nome do arquivo: ')))
+        print('_' * 80)
+        print('Por padrão os arquivos possuem extensão .txt')
+        # print('Caso queira .doc ou .csv, especificar na entrada abaixo.')
+        print('_' * 80)
+        print()
         j = 'S'
         while j == 'S':
             cria_arq(str(input('Nome do arquivo: ')))
