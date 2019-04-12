@@ -59,6 +59,18 @@ def cria_arq(nome_arquivo, extensao='txt'):
         print('Já existe um arquivo com este nome!!')
 
 
+# ----------------------------------- #
+# Menu para ler conteudo dos arquivos #
+# ----------------------------------- #
+def ler_arq(nome_arquivo, extensao='txt'):
+    arq = '.'.join([nome_arquivo, extensao])
+    abrir = open(arq, 'r+')
+    conteudo = abrir.readlines()
+    print('Conteúdo do arquivo: ')
+    print(conteudo)
+    
+
+
 # ---------------------------- #
 # Menu para manipular arquivos #
 # ---------------------------- #
@@ -90,7 +102,10 @@ def menu_arquivos():
             j = str(input('Deseja criar um novo arquivo? [S/N]')).upper()
         menu_arquivos()
     elif op == 2:
-        s = 0
+        ler_arq(str(input('Nome do arquivo: ')))
+        menu_arquivos()
+    elif op == 3:
+        print()
 
     else:
         print("Este número não está nas alternativas, tente novamente.\n")
