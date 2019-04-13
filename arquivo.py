@@ -19,6 +19,7 @@
 #                                       :)                                       #
 # ============================================================================== #
 
+# -*- coding: utf-8 -*-
 
 import os
 from time import sleep
@@ -66,9 +67,12 @@ def ler_arq(nome_arquivo, extensao='txt'):
     arq = '.'.join([nome_arquivo, extensao])
     abrir = open(arq, 'r+')
     conteudo = abrir.readlines()
-    print('Conteúdo do arquivo: ')
-    print(conteudo)
-    
+    verifica = os.stat(arq)
+    if verifica.st_size == 0:
+        print('Arquivo vazio!')
+    else:
+        print('Conteúdo do arquivo: ')
+        print(conteudo)
 
 
 # ---------------------------- #
