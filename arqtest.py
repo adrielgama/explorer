@@ -39,6 +39,13 @@ def title(tl):
     print()
 
 
+# ------------------------------ #
+#  Acessar o diretório arquivos  #
+# ------------------------------ #
+def acess_dir():
+    print(os.listdir(caminhoPAI))
+
+
 # ------------------------------- #
 #  Verifica o diretório arquivos  #
 # ------------------------------- #
@@ -204,7 +211,7 @@ def menu_diretorios():
         menu_diretorios()
 
     elif op == 3:  # ACESSAR DIRETORIOS
-
+        acess_dir()
         menu_diretorios()
 
     else:
