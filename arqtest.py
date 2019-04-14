@@ -19,7 +19,7 @@
 #                                       :)                                       #
 # ============================================================================== #
 
-# -*- coding: utf-8 -*-
+# -*- coding:utf-8 -*-
 
 import os
 from time import sleep
@@ -27,7 +27,9 @@ import os.path
 import shutil
 from pathlib import Path
 
-clear = lambda: os.system('cls')
+# clear = lambda: os.system('cls')
+
+caminhoPAI = 'C:\\Users\\proce\\Desktop\\Explorer'
 
 
 def title(tl):
@@ -45,6 +47,7 @@ def ver_dir(diretorio):
         # Se não existir, cria diretório
         # Diretório é criado na mesma pasta onde está o arquivo .py
         os.mkdir(diretorio)
+        print('Diretório criado com sucesso!')
     else:
         print('Diretório já existe!')
 
@@ -156,6 +159,9 @@ def menu_arquivos():
         menu_arquivos()
 
 
+# def acessar_dir():
+
+
 # -------------------------- #
 # Menu para manipular pastas #
 # -------------------------- #
@@ -173,6 +179,34 @@ def menu_diretorios():
 
     if op == 0:
         menu()
+
+    elif op == 1:  # CRIAR DIRETORIOS
+        j = 'S'
+        while j == 'S':
+            ver_dir(str(input('Nome do diretório: ')))
+            j = str(input('Deseja criar um novo diretório? [S/N]')).upper()
+        menu_diretorios()
+
+    elif op == 2:  # APAGAR DIRETORIOS
+        tem = (str(input('Informe o nome da pasta a ser apagada: ')))
+        dir_del = tem
+        if not os.path.exists(dir_del):
+            j = 'S'
+            while j == 'S':
+                j = str(input('Pasta inexistente. Deseja tentar outra? [S/N]')).upper()
+        else:
+            for caminho, pastas, arquivos in os.walk(caminhoPAI):
+                for pasta in pastas[:]:
+                    if pasta == dir_del:
+                        pastas.remove(pasta)
+                        shutil.rmtree(os.path.join(caminho, pasta))
+                        print('Pasta removida!')
+        menu_diretorios()
+
+    elif op == 3:  # ACESSAR DIRETORIOS
+
+        menu_diretorios()
+
     else:
         print("Este número não está nas alternativas, tente novamente.\n")
         menu_diretorios()
@@ -211,7 +245,7 @@ def menu():
     [2] - DIRETÓRIOS (Criar, apagar e acessar diretórios)
     [3] - MOVER (Mover arquivos)
     [0] - Sair
-    
+
     Opção: '''))
 
     if op == 0:
