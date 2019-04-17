@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 # ============================================================================== #
 #                                                                                #
 # Instituto Federal de Ciencia Educacao e Tecnologia da Bahia - Campus Salvador  #
@@ -19,17 +20,19 @@
 #                                       :)                                       #
 # ============================================================================== #
 
-# -*- coding:utf-8 -*-
-
 import os
 from time import sleep
 import os.path
 import shutil
 from pathlib import Path
+import glob
 
 # clear = lambda: os.system('cls')
 
-caminhoPAI = 'C:\\Users\\proce\\Desktop\\Explorer'
+# ATENÇÃO, MUDAR A PASTA ****PAI**** DO ARQUIVO AQUI
+caminhoPAI = '/Users/proce/Desktop/explorer2/'  # ###
+# ATENÇÃO, MUDAR A PASTA ****PAI**** DO ARQUIVO AQUI
+caminhoAT = os.getcwd()
 
 
 def title(tl):
@@ -39,11 +42,46 @@ def title(tl):
     print()
 
 
+def subtitle(tl):
+    print('_' * 48)
+    print(f'{tl:^48}'.upper())
+    print('_' * 48)
+
+
 # ------------------------------ #
 #  Acessar o diretório arquivos  #
 # ------------------------------ #
 def acess_dir():
-    print(os.listdir(caminhoPAI))
+    subtitle(' Para acessar subpastas utilize: /nome_da_pasta \n       Para retornar pastas utilize: "."')
+    print()
+    acesso = os.getcwd()
+    with os.scandir(acesso) as it:
+        for entry in it:
+            if not entry.name.startswith('.') and entry.is_dir():
+                print('\t', entry.name)
+    os.chdir(acesso)
+    if os.getcwd() == caminhoPAI:
+        print(caminhoPAI)
+    else:
+        print(caminhoAT)
+    tem = (str(input('\nInforme o nome da pasta a ser acessada: ')))
+    new_acesso = tem
+    if not os.path.exists(new_acesso):
+        aux = 'S'
+        while aux == 'S':
+            aux = str(input('Pasta inexistente. Deseja tentar outra? [S/N]')).upper()
+    else:
+        caminho_atual = caminhoPAI + tem
+        print(caminhoAT)
+        print('Subpastas: ')
+        with os.scandir(caminho_atual) as it:
+            for entry in it:
+                if not entry.name.startswith('.') and entry.is_dir():
+                    print('\t', entry.name)
+        print(os.chdir(caminho_atual))
+        print('.' * 50)
+        print(os.getcwd())
+        print('.' * 50)
 
 
 # ------------------------------- #
@@ -51,12 +89,39 @@ def acess_dir():
 # ------------------------------- #
 def ver_dir(diretorio):
     if not os.path.exists(diretorio):
-        # Se não existir, cria diretório
-        # Diretório é criado na mesma pasta onde está o arquivo .py
-        os.mkdir(diretorio)
+        os.mkdir(diretorio)  # Se não existir, cria diretório
         print('Diretório criado com sucesso!')
     else:
         print('Diretório já existe!')
+
+
+# ----------------- #
+#  LISTAR ARQUIVOS  #
+# ----------------- #
+def listar_arquivos():
+    for filename in glob.iglob('', recursive=True):
+        print('_' * 80)
+        print('Pasta acessada: ', end='')
+        print(filename)
+    listname = glob.glob('*.txt')
+    if not listname:
+        with os.scandir() as it:
+            for entry in it:
+                if not entry.name.startswith('.') and entry.is_dir():
+                    print('\t', entry.name)
+        print('Nenhum arquivo de texto encontrado nesta pasta')
+    else:
+        print(listname)
+
+
+# ------------------- #
+#  LISTAR DIRETÓRIOS  #
+# ------------------ #
+def listar_dir():
+    for filename in glob.iglob('', recursive=True):
+        print('_' * 80)
+        print('Pasta acessada: ', end='')
+        print(filename)
 
 
 # ---------------------------- #
@@ -75,14 +140,15 @@ def cria_arq(nome_arquivo, extensao='txt'):
 # ----------------------------------- #
 def ler_arq(nome_arquivo, extensao='txt'):
     arq = '.'.join([nome_arquivo, extensao])
-    abrir = open(arq, 'r+')
-    conteudo = abrir.readlines()
+    abrir = open(arq, 'r')
     verifica = os.stat(arq)
     if verifica.st_size == 0:
         print('Arquivo vazio!')
     else:
-        print('Conteúdo do arquivo: ')
-        print(conteudo)
+        subtitle('Conteúdo do arquivo: ')
+        for linha in abrir:
+            linha = linha.rstrip()
+            print(linha)
     abrir.close()
 
 
@@ -107,9 +173,8 @@ def busca_diretorio(diretorio):
 # --------------- #
 def edit_arq(nome_arquivo, extensao='txt'):
     arq = '.'.join([nome_arquivo, extensao])
-    edit = open(arq, 'w+')
-    diretorio = str(input('Informe o diretorio que deseja acessar o arquivo: '))
-    busca_diretorio(diretorio)
+    edit = open(arq, 'a')
+    # conteudo = edit.read()
 
     if not os.path.exists(arq):
         print('Arquivo não existe')
@@ -119,9 +184,28 @@ def edit_arq(nome_arquivo, extensao='txt'):
         else:
             menu_arquivos()
     else:
-        print(edit)
-
+        texto = str(input('Informe o conteúdo a ser adicionado no documento: '))
+        edit = open(arq, 'a')
+        edit.writelines('\n' + texto)
     edit.close()
+    print('Arquivo fechado.')
+
+
+# --------------- #
+# Editar arquivos #
+# --------------- #
+def apagar_arq(nome_arquivo, extensao='txt'):
+    arq = '.'.join([nome_arquivo, extensao])
+    path = os.getcwd()
+    diretorio = os.listdir(path)
+    escolha = arq
+    if not os.path.exists(escolha):
+        print('Não tem como excluir um arquivo inexistente.')
+    else:
+        for arq in diretorio:
+            if arq == escolha:
+                os.remove(arq)
+        print('Arquivo deletado com sucesso!!')
 
 
 # ---------------------------- #
@@ -155,46 +239,51 @@ def menu_arquivos():
             j = str(input('Deseja criar um novo arquivo? [S/N]')).upper()
         menu_arquivos()
     elif op == 2:
+        listar_arquivos()
         ler_arq(str(input('Nome do arquivo: ')))
         menu_arquivos()
     elif op == 3:
-        edit_arq(str(input('Informe arquivo que deseja editar: ')))
+        listar_arquivos()
+        arquivo = str(input('Informe arquivo que deseja editar: '))
+        edit_arq(arquivo)
         menu_arquivos()
-
+    elif op == 4:
+        listar_arquivos()
+        escolha = str(input('Informe o arquivo que deseja apagar: '))
+        apagar_arq(escolha)
+        menu_arquivos()
     else:
         print("Este número não está nas alternativas, tente novamente.\n")
         menu_arquivos()
-
-
-# def acessar_dir():
 
 
 # -------------------------- #
 # Menu para manipular pastas #
 # -------------------------- #
 def menu_diretorios():
-    # clear()
     title('Navegando pelo Menu DIRETÓRIOS')
     print('Escolha sua opção: ')
-    op = int(input('''
-        [1] - Criar diretórios
-        [2] - Apagar diretórios
-        [3] - Acessar diretórios
-        [0] - Retornar/Sair
+    op = str(input('''
+        [mkdir] - Criar diretórios
+        [rm] - Apagar diretórios
+        [cd] - Acessar diretórios
+        [ls] - Listar Arquivos
+        [exit] - Retornar/Sair
+        Opção: ''')).lower()
 
-        Opção: '''))
-
-    if op == 0:
+    if op == 'exit':
         menu()
-
-    elif op == 1:  # CRIAR DIRETORIOS
+# ------------------------------------------------------------------------------------------- #
+    elif op == 'mkdir':  # CRIAR DIRETORIOS
         j = 'S'
         while j == 'S':
+            print('Para criar subpastas utilize "/" ')
             ver_dir(str(input('Nome do diretório: ')))
             j = str(input('Deseja criar um novo diretório? [S/N]')).upper()
         menu_diretorios()
-
-    elif op == 2:  # APAGAR DIRETORIOS
+# ------------------------------------------------------------------------------------------- #
+    elif op == 'rm':  # APAGAR DIRETORIOS
+        listar_dir()
         tem = (str(input('Informe o nome da pasta a ser apagada: ')))
         dir_del = tem
         if not os.path.exists(dir_del):
@@ -202,20 +291,29 @@ def menu_diretorios():
             while j == 'S':
                 j = str(input('Pasta inexistente. Deseja tentar outra? [S/N]')).upper()
         else:
-            for caminho, pastas, arquivos in os.walk(caminhoPAI):
+            for caminho, pastas, arquivos in os.walk(os.getcwd()):
+                # for caminho, pastas, arquivos in os.walk(caminhoPAI):
                 for pasta in pastas[:]:
                     if pasta == dir_del:
                         pastas.remove(pasta)
                         shutil.rmtree(os.path.join(caminho, pasta))
                         print('Pasta removida!')
         menu_diretorios()
-
-    elif op == 3:  # ACESSAR DIRETORIOS
+# ------------------------------------------------------------------------------------------- #
+    elif op == 'cd':  # ACESSAR DIRETORIOS
+        listar_dir()
         acess_dir()
         menu_diretorios()
+# ------------------------------------------------------------------------------------------- #
+    elif op == 'ls':  # LISTAR ARQUIVOS
+        print(os.getcwd())
+        listar_dir()
+        listar_arquivos()
+        menu_diretorios()
 
+# ------------------------------------------------------------------------------------------- #
     else:
-        print("Este número não está nas alternativas, tente novamente.\n")
+        print("Esta opção não está nas alternativas, tente novamente.\n")
         menu_diretorios()
 
 
@@ -260,7 +358,7 @@ def menu():
         print('_' * 80)
         print('\nAguarde, estou finalizando o programa...\n')
         for cont in range(3, 0, -1):
-            sleep(1)
+            sleep(0.5)
             print(f'Saindo em {cont}...')
         print('\nGerenciador finalizado com sucesso!')
         exit(1)
