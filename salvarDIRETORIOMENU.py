@@ -30,9 +30,6 @@ def acess_dir():
         for entry in it:
             if not entry.name.startswith('.') and entry.is_dir():
                 print('\t', entry.name)
-
-    # print(os.scandir(acesso))
-    # listar_pastas(acesso)
     os.chdir(acesso)
     if os.getcwd() == caminhoPAI:
         print(caminhoPAI)
@@ -40,7 +37,6 @@ def acess_dir():
         print(caminhoAT)
     tem = (str(input('\nInforme o nome da pasta a ser acessada: ')))
     new_acesso = tem
-    # os.chdir(new_acesso)
     if not os.path.exists(new_acesso):
         aux = 'S'
         while aux == 'S':
@@ -53,22 +49,10 @@ def acess_dir():
             for entry in it:
                 if not entry.name.startswith('.') and entry.is_dir():
                     print('\t', entry.name)
-
-        # listar_pastas(caminho_atual)
         print(os.chdir(caminho_atual))
         print('.' * 50)
         print(os.getcwd())
         print('.' * 50)
-        # print(caminhoAT)
-        # for caminho, pastas, arquivos in os.walk(caminho_atual):
-        #    os.chdir(caminho)
-        #    for pasta in pastas:
-        #        print(os.path.join(caminho, pasta))
-        #        print('Pasta acessada!')
-        #        listar_dir()
-        #        print(caminhoAT)
-        #         break
-        #    break
 
 
 def ver_dir(diretorio):
@@ -146,20 +130,14 @@ def menu_diretorios():
         menu_diretorios()
 # ------------------------------------------------------------------------------------------- #
     elif op == 'cd':  # ACESSAR DIRETORIOS
-        # print('_' * 40)
         listar_dir()
         acess_dir()
-
-        # print('_' * 80)
-
         menu_diretorios()
 # ------------------------------------------------------------------------------------------- #
     elif op == 'ls':  # LISTAR ARQUIVOS
         print(os.getcwd())
         listar_dir()
-        # caminho = caminhoPAI
         listar_arquivos()
-        # print(os.getcwd())
         menu_diretorios()
 
 # ------------------------------------------------------------------------------------------- #
