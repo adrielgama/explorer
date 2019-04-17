@@ -3,8 +3,10 @@
 import os
 import os.path
 import shutil
+import glob
 
-caminhoPAI = '/home/adriel/Documentos/explorer/'
+caminhoPAI = '/Users/proce/Desktop/explorer2/'
+caminhoAT = os.getcwd()
 
 
 def title(tl):
@@ -14,11 +16,43 @@ def title(tl):
     print()
 
 
-def acess_dir(caminho):
-    with os.scandir(caminho) as it:
+def subtitle(tl):
+    print('_' * 48)
+    print(f'{tl:^48}'.upper())
+    print('_' * 48)
+
+
+def acess_dir():
+    subtitle(' Para acessar subpastas utilize: /nome_da_pasta \n       Para retornar pastas utilize: "."')
+    print()
+    acesso = os.getcwd()
+    with os.scandir(acesso) as it:
         for entry in it:
             if not entry.name.startswith('.') and entry.is_dir():
                 print('\t', entry.name)
+    os.chdir(acesso)
+    if os.getcwd() == caminhoPAI:
+        print(caminhoPAI)
+    else:
+        print(caminhoAT)
+    tem = (str(input('\nInforme o nome da pasta a ser acessada: ')))
+    new_acesso = tem
+    if not os.path.exists(new_acesso):
+        aux = 'S'
+        while aux == 'S':
+            aux = str(input('Pasta inexistente. Deseja tentar outra? [S/N]')).upper()
+    else:
+        caminho_atual = caminhoPAI + tem
+        print(caminhoAT)
+        print('Subpastas: ')
+        with os.scandir(caminho_atual) as it:
+            for entry in it:
+                if not entry.name.startswith('.') and entry.is_dir():
+                    print('\t', entry.name)
+        print(os.chdir(caminho_atual))
+        print('.' * 50)
+        print(os.getcwd())
+        print('.' * 50)
 
 
 def ver_dir(diretorio):
@@ -29,11 +63,31 @@ def ver_dir(diretorio):
         print('Diretório já existe!')
 
 
-def listar_arquivos(caminho):
-    with os.scandir(caminho) as it:
-        for entrar in it:
-            if not entrar.name.startswith('.') and entrar.is_file():
-                print('\t', entrar.name)
+def listar_arquivos():
+    for filename in glob.iglob('', recursive=True):
+        print('_' * 80)
+        print('Pasta acessada: ', end='')
+        print(filename)
+    listname = glob.glob('*.txt')
+    if not listname:
+        with os.scandir() as it:
+            for entry in it:
+                if not entry.name.startswith('.') and entry.is_dir():
+                    print('\t', entry.name)
+        print('Nenhum arquivo de texto encontrado nesta pasta')
+    else:
+        print(listname)
+    # with os.scandir(caminho) as it:
+    #    for entrar in it:
+    #        if not entrar.name.startswith('.') and entrar.is_file():
+    #            print('\t', entrar.name)
+
+
+def listar_dir():
+    for filename in glob.iglob('', recursive=True):
+        print('_' * 80)
+        print('Pasta acessada: ', end='')
+        print(filename)
 
 
 def menu_diretorios():
@@ -59,6 +113,7 @@ def menu_diretorios():
         menu_diretorios()
 # ------------------------------------------------------------------------------------------- #
     elif op == 'rm':  # APAGAR DIRETORIOS
+        listar_dir()
         tem = (str(input('Informe o nome da pasta a ser apagada: ')))
         dir_del = tem
         if not os.path.exists(dir_del):
@@ -66,7 +121,8 @@ def menu_diretorios():
             while j == 'S':
                 j = str(input('Pasta inexistente. Deseja tentar outra? [S/N]')).upper()
         else:
-            for caminho, pastas, arquivos in os.walk(caminhoPAI):
+            for caminho, pastas, arquivos in os.walk(os.getcwd()):
+            # for caminho, pastas, arquivos in os.walk(caminhoPAI):
                 for pasta in pastas[:]:
                     if pasta == dir_del:
                         pastas.remove(pasta)
@@ -75,30 +131,14 @@ def menu_diretorios():
         menu_diretorios()
 # ------------------------------------------------------------------------------------------- #
     elif op == 'cd':  # ACESSAR DIRETORIOS
-        print('_' * 40)
-        acess_dir(caminhoPAI)
-        tem = (str(input('Informe o nome da pasta a ser acessada: ')))
-        dir_acesso = tem
-        if not os.path.exists(dir_acesso):
-            j = 'S'
-            while j == 'S':
-                j = str(input('Pasta inexistente. Deseja tentar outra? [S/N]')).upper()
-        else:
-            # dir_acesso = caminhoPAI + tem
-            for caminho, pastas, arquivos in os.walk(caminhoPAI+tem):
-                for pasta in pastas[:]:
-                    if pasta == dir_acesso:
-                        caminho = tem
-                        os.chdir(caminho)
-                        print('Pasta acessada!')
-        print('_' * 40)
-
+        listar_dir()
+        acess_dir()
         menu_diretorios()
 # ------------------------------------------------------------------------------------------- #
     elif op == 'ls':  # LISTAR ARQUIVOS
-        caminho = caminhoPAI
-        print(listar_arquivos(caminho))
         print(os.getcwd())
+        listar_dir()
+        listar_arquivos()
         menu_diretorios()
 
 # ------------------------------------------------------------------------------------------- #
