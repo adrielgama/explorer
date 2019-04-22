@@ -29,10 +29,12 @@ import glob
 
 # clear = lambda: os.system('cls')
 
+# cPai = str(input('Informe o caminho onde está o arquivo .py (ex: C:/Users/user/Desktop/PastaARQUIVO/): '))
+# caminhoPAI = cPai
+
 # ATENÇÃO, MUDAR A PASTA ****PAI**** DO ARQUIVO AQUI
 caminhoPAI = '/home/adriel/Documentos/explorer/'  # ###
 # ATENÇÃO, MUDAR A PASTA ****PAI**** DO ARQUIVO AQUI
-
 caminhoAT = os.getcwd()
 
 
@@ -46,7 +48,7 @@ def title(tl):
 def subtitle(tl):
     print('_' * 48)
     print(f'{tl:^48}'.upper())
-    print('_' * 48)
+    # print('_' * 48)
 
 
 # ------------------------------ #
@@ -68,9 +70,9 @@ def acess_dir():
     tem = (str(input('\nInforme o nome da pasta a ser acessada: ')))
     new_acesso = tem
     if not os.path.exists(new_acesso):
-        aux = 'S'
-        while aux == 'S':
-            aux = str(input('Pasta inexistente. Deseja tentar outra? [S/N]')).upper()
+        print('Pasta inexistente')
+        # while aux == 'S':
+        #    aux = str(input('Pasta inexistente. Deseja tentar outra? [S/N]')).upper()
     else:
         caminho_atual = caminhoPAI + tem
         print(caminhoAT)
@@ -141,16 +143,19 @@ def cria_arq(nome_arquivo, extensao='txt'):
 # ----------------------------------- #
 def ler_arq(nome_arquivo, extensao='txt'):
     arq = '.'.join([nome_arquivo, extensao])
-    abrir = open(arq, 'r')
-    verifica = os.stat(arq)
-    if verifica.st_size == 0:
-        print('Arquivo vazio!')
+    if not os.path.exists(arq):
+        print('Arquivo inexistente')
     else:
-        subtitle('Conteúdo do arquivo: ')
-        for linha in abrir:
-            linha = linha.rstrip()
-            print(linha)
-    abrir.close()
+        abrir = open(arq, 'r')
+        verifica = os.stat(arq)
+        if verifica.st_size == 0:
+            print('Arquivo vazio!')
+        else:
+            subtitle('Conteúdo do arquivo: ')
+            for linha in abrir:
+                linha = linha.rstrip()
+                print(linha)
+        abrir.close()
 
 
 # ----------------- #
@@ -176,7 +181,6 @@ def edit_arq(nome_arquivo, extensao='txt'):
     arq = '.'.join([nome_arquivo, extensao])
     edit = open(arq, 'a')
     # conteudo = edit.read()
-
     if not os.path.exists(arq):
         print('Arquivo não existe')
         j = str(input('Deseja criar o arquivo com este nome? [S/N]')).upper()
@@ -208,6 +212,28 @@ def apagar_arq(nome_arquivo, extensao='txt'):
                 os.remove(arq)
         print('Arquivo deletado com sucesso!!')
 
+
+# -------------- #
+# Mover arquivos #
+# -------------- #
+def mover_arq(nome_arquivo, extensao='txt'):
+    arq = '.'.join([nome_arquivo, extensao])
+    if not os.path.exists(arq):
+        print('Arquivo não encontrado.')
+    else:
+        local = str(input('Informe o local que deseja o arquivo (ex: /home/adriel/Documentos/explorer/): '))
+        if not os.path.exists(local):
+            print('Não encontrei o local informado.')
+        elif local == caminhoPAI:
+            print('Não consigo mover o arquivo para um local em que ele já está!')
+        else:
+            shutil.move(arq, local)
+            print('Arquivo movido com sucesso.')
+
+
+# ------------------------------------------------------------ #
+# ------------------ MENUS PARA MANIPULAÇÃO ------------------ #
+# ------------------------------------------------------------ #
 
 # ---------------------------- #
 # Menu para manipular arquivos #
@@ -287,9 +313,10 @@ def menu_diretorios():
         tem = (str(input('Informe o nome da pasta a ser apagada: ')))
         dir_del = tem
         if not os.path.exists(dir_del):
-            j = 'S'
-            while j == 'S':
-                j = str(input('Pasta inexistente. Deseja tentar outra? [S/N]')).upper()
+            print('Pasta inexistente.')
+            # j = 'S'
+            # while j == 'S':
+            #    j = str(input('Pasta inexistente. Deseja tentar outra? [S/N]')).upper()
         else:
             for caminho, pastas, arquivos in os.walk(os.getcwd()):
                 # for caminho, pastas, arquivos in os.walk(caminhoPAI):
@@ -325,14 +352,21 @@ def menu_mover():
     title('Navegando pelo Menu MOVER')
     print('Escolha sua opção: ')
     op = int(input('''
-        [1] - Criar diretórios
-        [2] - Apagar diretórios
-        [3] - Acessar diretórios
+        [1] - Listar arquivos
+        [2] - Mover arquivos
         [0] - Retornar/Sair
         Opção: '''))
 
     if op == 0:
         menu()
+    elif op == 1:
+        listar_arquivos()
+        menu_mover()
+    elif op == 2:
+        listar_arquivos()
+        arq = str(input('Informe o arquivo que deseja mover: '))
+        mover_arq(arq)
+        menu_mover()
     else:
         print("Este número não está nas alternativas, tente novamente.\n")
         menu_mover()
@@ -359,6 +393,7 @@ def menu():
             sleep(0.5)
             print(f'Saindo em {cont}...')
         print('\nGerenciador finalizado com sucesso!')
+        title('Alunos:     Adriel Gama | Ítalo Luis | Tamires Manhães')
         exit(1)
     elif op == 1:
         return menu_arquivos()
