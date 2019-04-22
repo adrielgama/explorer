@@ -11,7 +11,7 @@
 #                                                                                #
 #                                       Alunos:                                  #
 #                                     Adriel Gama                                #
-#                                      Ítalo Luiz                                #
+#                                      Ítalo Luis                                #
 #                                   Tamires Manhães                              #
 #                                                                                #
 #                   ==============================================               #
